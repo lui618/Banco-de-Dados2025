@@ -1,0 +1,8 @@
+--Aula do dia 11/03/2025
+--Professor Molina
+
+
+
+--Comando select com WHERE
+
+SELECT * FROM medicos WHERE codm=3;
