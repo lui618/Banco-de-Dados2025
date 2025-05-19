@@ -1,0 +1,305 @@
+CREATE DATABASE biblioteca;
+USE biblioteca;
+
+
+CREATE TABLE autores (
+id int auto_increment primary key,
+nome varchar(200) not null,
+nacionalidade varchar(200) not null,
+data_de_nascimento date not null,
+-- coluna criada por mim
+genero enum('masculino' ,'feminino','outros') not null
+);
+
+
+CREATE TABLE livros (
+id INT auto_increment primary key,
+titulo varchar(150) not null,
+ano_publicacao year not null,
+genero enum('romance','ficção','fantasia','terror','historia') not null,
+descricao varchar(5000) not null,
+disponibilidade boolean default TRUE,
+-- coluna criada por mim
+numero_de_paginas int not null,
+-- chave estrangeira
+id_autor int,
+Foreign key (id_autor) references autores(id) 
+);
+
+CREATE TABLE usuarios (
+id int auto_increment primary key,
+nome varchar(100) not null,
+email varchar(200) UNIQUE,
+telefone varchar(20) UNIQUE not null,
+data_cadastro date not null,
+-- coluna criada por mim
+genero enum('masculino','feminino','outros') not null
+);
+
+
+CREATE TABLE emprestimos(
+id int auto_increment primary key,
+id_usuario int,
+id_livro int,
+data_de_emprestimo date not null,
+data_devolucao_prevista date not null,
+data_devolucao_real date,
+status enum('Com cliente','Devolvido') not null,
+-- coluna criada por mim
+-- Após usuario entregar o livro, o usuario avalia o que achou dele.
+avaliacao_do_leitor enum('Muito Bom','Bom','Mais ou menos','Ruim'),
+-- chaves estrangeiras
+foreign key (id_usuario) references usuarios(id),
+foreign key (id_livro) references livros(id)
+);
+
+CREATE TABLE reservas(
+id int auto_increment primary key,
+id_usuario int,
+id_livro int,
+data_reserva date not null,
+status_reserva enum('Reservado','Entregue ao usuario'),
+-- coluna criada por mim
+pontuacao_de_confianca int default 100,
+CHECK (pontuacao_de_confianca >= 0 AND pontuacao_de_confianca <= 100),
+-- chaves estrangeiras
+foreign key (id_livro) references livros(id),
+foreign key (id_usuario) references usuarios(id)
+);
+
+INSERT INTO usuarios (nome, email, telefone, data_cadastro, genero) VALUES
+('Ana', 'ana@example.com', '61990000001', '2025-01-10', 'feminino'),
+('Bruno', 'bruno@example.com', '61990000002', '2025-01-11', 'masculino'),
+('Carla', 'carla@example.com', '61990000003', '2025-01-12', 'feminino'),
+('Diego', 'diego@example.com', '61990000004', '2025-01-13', 'masculino'),
+('Elisa', 'elisa@example.com', '61990000005', '2025-01-14', 'feminino'),
+('Felipe', 'felipe@example.com', '61990000006', '2025-01-15', 'masculino'),
+('Gabriela', 'gabriela@example.com', '61990000007', '2025-01-16', 'feminino'),
+('Henrique', 'henrique@example.com', '61990000008', '2025-01-17', 'masculino'),
+('Isabela', 'isabela@example.com', '61990000009', '2025-01-18', 'feminino'),
+('Joao', 'joao@example.com', '61990000010', '2025-01-19', 'masculino'),
+('Karen', 'karen@example.com', '61990000011', '2025-01-20', 'feminino'),
+('Lucas', 'lucas@example.com', '61990000012', '2025-01-21', 'masculino'),
+('Mariana', 'mariana@example.com', '61990000013', '2025-01-22', 'feminino'),
+('Nicolas', 'nicolas@example.com', '61990000014', '2025-01-23', 'masculino'),
+('Olivia', 'olivia@example.com', '61990000015', '2025-01-24', 'feminino'),
+('Pedro', 'pedro@example.com', '61990000016', '2025-01-25', 'masculino'),
+('Quesia', 'quesia@example.com', '61990000017', '2025-01-26', 'feminino'),
+('Rafael', 'rafael@example.com', '61990000018', '2025-01-27', 'masculino'),
+('Sabrina', 'sabrina@example.com', '61990000019', '2025-01-28', 'feminino'),
+('Tiago', 'tiago@example.com', '61990000020', '2025-01-29', 'masculino'),
+('Ursula', 'ursula@example.com', '61990000021', '2025-01-30', 'feminino'),
+('Victor', 'victor@example.com', '61990000022', '2025-01-31', 'masculino'),
+('Wanda', 'wanda@example.com', '61990000023', '2025-02-01', 'feminino'),
+('Xavier', 'xavier@example.com', '61990000024', '2025-02-02', 'masculino'),
+('Yara', 'yara@example.com', '61990000025', '2025-02-03', 'feminino'),
+('Zeca', 'zeca@example.com', '61990000026', '2025-02-04', 'masculino'),
+('Alice', 'alice@example.com', '61990000027', '2025-02-05', 'feminino'),
+('Bernardo', 'bernardo@example.com', '61990000028', '2025-02-06', 'masculino'),
+('Camila', 'camila@example.com', '61990000029', '2025-02-07', 'feminino'),
+('Daniel', 'daniel@example.com', '61990000030', '2025-02-08', 'masculino'),
+('Eduardo', 'eduardo@example.com', '61990000031', '2025-02-09', 'masculino'),
+('Fernanda', 'fernanda@example.com', '61990000032', '2025-02-10', 'feminino'),
+('Gustavo', 'gustavo@example.com', '61990000033', '2025-02-11', 'masculino'),
+('Helena', 'helena@example.com', '61990000034', '2025-02-12', 'feminino'),
+('Igor', 'igor@example.com', '61990000035', '2025-02-13', 'masculino'),
+('Juliana', 'juliana@example.com', '61990000036', '2025-02-14', 'feminino'),
+('Kevin', 'kevin@example.com', '61990000037', '2025-02-15', 'masculino'),
+('Lara', 'lara@example.com', '61990000038', '2025-02-16', 'feminino'),
+('Mateus', 'mateus@example.com', '61990000039', '2025-02-17', 'masculino'),
+('Natalia', 'natalia@example.com', '61990000040', '2025-02-18', 'feminino');
+
+
+INSERT INTO autores (nome, nacionalidade, data_de_nascimento, genero) VALUES
+('José Saramago', 'Português', '1922-11-16', 'Masculino'),
+('Clarice Lispector', 'Brasileira', '1920-12-10', 'Feminino'),
+('Gabriel García Márquez', 'Colombiano', '1927-03-06', 'Masculino'),
+('Chimamanda Ngozi Adichie', 'Nigeriana', '1977-09-15', 'Feminino'),
+('Haruki Murakami', 'Japonês', '1949-01-12', 'Masculino'),
+('Isabel Allende', 'Chilena', '1942-08-02', 'Feminino'),
+('J.K. Rowling', 'Britânica', '1965-07-31', 'Feminino'),
+('Stephen King', 'Americano', '1947-09-21', 'Masculino'),
+('Toni Morrison', 'Americana', '1931-02-18', 'Feminino'),
+('Paulo Coelho', 'Brasileiro', '1947-08-24', 'Masculino'),
+('Virginia Woolf', 'Britânica', '1882-01-25', 'Feminino'),
+('J.R.R. Tolkien', 'Britânico', '1892-01-03', 'Masculino'),
+('Margaret Atwood', 'Canadense', '1939-11-18', 'Feminino'),
+('Fiódor Dostoiévski', 'Russo', '1821-11-11', 'Masculino'),
+('Jane Austen', 'Britânica', '1775-12-16', 'Feminino'),
+('George Orwell', 'Britânico', '1903-06-25', 'Masculino'),
+('Agatha Christie', 'Britânica', '1890-09-15', 'Feminino'),
+('Leo Tolstói', 'Russo', '1828-09-09', 'Masculino'),
+('Simone de Beauvoir', 'Francesa', '1908-01-09', 'Feminino'),
+('Mark Twain', 'Americano', '1835-11-30', 'Masculino'),
+('Zadie Smith', 'Britânica', '1975-10-27', 'Feminino'),
+('Charles Dickens', 'Britânico', '1812-02-07', 'Masculino'),
+('Maya Angelou', 'Americana', '1928-04-04', 'Feminino'),
+('Homer', 'Grego', '0800-01-01', 'Masculino'),
+('Isabel Allende', 'Chilena', '1942-08-02', 'Feminino'),
+('Jules Verne', 'Francês', '1828-02-08', 'Masculino'),
+('Alice Walker', 'Americana', '1944-02-09', 'Feminino'),
+('Albert Camus', 'Francês', '1913-11-07', 'Masculino'),
+('Edith Wharton', 'Americana', '1862-01-24', 'Feminino'),
+('H.G. Wells', 'Britânico', '1866-09-21', 'Masculino'),
+('Marguerite Duras', 'Francesa', '1914-04-04', 'Feminino'),
+('Oscar Wilde', 'Irlandês', '1854-10-16', 'Masculino'),
+('Sylvia Plath', 'Americana', '1932-10-27', 'Feminino'),
+('James Joyce', 'Irlandês', '1882-02-02', 'Masculino'),
+('Emily Dickinson', 'Americana', '1830-12-10', 'Feminino'),
+('Victor Hugo', 'Francês', '1802-02-26', 'Masculino'),
+('Simone Weil', 'Francesa', '1909-02-03', 'Feminino'),
+('Franz Kafka', 'Tcheco', '1883-07-03', 'Masculino'),
+('Louisa May Alcott', 'Americana', '1832-11-29', 'Feminino'),
+('Luis Campelo', 'Português', '2004-07-12', 'Masculino');
+
+
+INSERT INTO livros (titulo, ano_publicacao, genero, descricao, disponibilidade, numero_de_paginas, id_autor) VALUES
+('Amor em Tempos de Guerra', 2010, 'romance', 'Um romance emocionante ambientado durante a guerra.', TRUE, 320, 1),
+('Além das Estrelas', 2015, 'ficção', 'Uma jornada épica pelo universo desconhecido.', FALSE, 280, 2),
+('A Floresta Sombria', 2008, 'fantasia', 'Contos mágicos em uma floresta encantada.', TRUE, 350, 3),
+('Noite de Terror', 2019, 'terror', 'Histórias assustadoras para noites sem sono.', TRUE, 220, 4),
+('A História do Império', 2000, 'historia', 'Relato detalhado do auge de um império.', FALSE, 400, 5),
+('Corações Entrelaçados', 2012, 'romance', 'Dois corações que se encontram contra todas as odds.', TRUE, 310, 6),
+('O Último Planeta', 2018, 'ficção', 'Sobrevivência em um planeta distante.', TRUE, 290, 7),
+('Magia Proibida', 2011, 'fantasia', 'Um jovem descobre poderes secretos.', FALSE, 370, 8),
+('Sombras da Meia-Noite', 2017, 'terror', 'O mal espreita nas sombras da cidade.', TRUE, 230, 9),
+('Revoluções do Passado', 2005, 'historia', 'Análise das grandes revoluções mundiais.', TRUE, 450, 10),
+('Amores e Desamores', 2013, 'romance', 'Histórias de amor, perda e superação.', FALSE, 330, 11),
+('Aventura Intergaláctica', 2016, 'ficção', 'Exploração de galáxias desconhecidas.', TRUE, 310, 12),
+('Reinos Encantados', 2009, 'fantasia', 'Reinos místicos e batalhas épicas.', TRUE, 360, 13),
+('O Eco do Medo', 2020, 'terror', 'O terror que vem do passado.', FALSE, 210, 14),
+('Crônicas da Antiguidade', 2003, 'historia', 'Narrativas históricas de civilizações antigas.', TRUE, 420, 15),
+('Paixão e Destino', 2014, 'romance', 'História de paixão e escolhas difíceis.', TRUE, 300, 16),
+('Horizontes Distantes', 2017, 'ficção', 'Viagens e descobertas além do conhecido.', FALSE, 280, 17),
+('Lendas da Magia', 2010, 'fantasia', 'Lendas antigas ganham vida.', TRUE, 355, 18),
+('A Casa Assombrada', 2018, 'terror', 'Mistérios de uma casa maldita.', TRUE, 240, 19),
+('Conquistas e Guerras', 2002, 'historia', 'Grandes batalhas e conquistas históricas.', FALSE, 460, 20),
+('Vidas Entrelaçadas', 2011, 'romance', 'Histórias de vidas cruzadas.', TRUE, 320, 21),
+('Fronteiras do Universo', 2019, 'ficção', 'Exploração científica no espaço.', TRUE, 300, 22),
+('A Espada do Dragão', 2007, 'fantasia', 'Uma espada lendária e um destino épico.', FALSE, 370, 23),
+('No Escuro', 2021, 'terror', 'O medo que habita o escuro.', TRUE, 220, 24),
+('Impérios Esquecidos', 2004, 'historia', 'Relatos de impérios perdidos no tempo.', TRUE, 440, 25),
+('Caminhos do Coração', 2015, 'romance', 'O poder do amor verdadeiro.', FALSE, 310, 26),
+('Universo Paralelo', 2018, 'ficção', 'Mundos paralelos e realidades alternativas.', TRUE, 290, 27),
+('O Feiticeiro', 2012, 'fantasia', 'Um feiticeiro luta contra o mal.', TRUE, 360, 28),
+('Vozes do Medo', 2019, 'terror', 'Vozes que ninguém deveria ouvir.', FALSE, 230, 29),
+('Era das Civilizações', 2001, 'historia', 'Evolução das primeiras civilizações.', TRUE, 430, 30),
+('Segredos do Amor', 2013, 'romance', 'Segredos que mudam vidas.', TRUE, 320, 31),
+('Galáxias Distantes', 2016, 'ficção', 'Viagem pelo cosmos desconhecido.', FALSE, 300, 32),
+('Terra Encantada', 2008, 'fantasia', 'Um mundo mágico além da imaginação.', TRUE, 350, 33),
+('Medo Profundo', 2020, 'terror', 'O terror nas profundezas.', TRUE, 210, 34),
+('Revolução Mundial', 2003, 'historia', 'Eventos que mudaram o mundo.', FALSE, 450, 35),
+('Amor Infinito', 2014, 'romance', 'Amor que transcende o tempo.', TRUE, 310, 36),
+('Exploradores do Espaço', 2017, 'ficção', 'Missões para além do sistema solar.', TRUE, 280, 37),
+('Mundos Mágicos', 2011, 'fantasia', 'Descoberta de mundos ocultos.', FALSE, 360, 38),
+('Sussurros da Noite', 2018, 'terror', 'Mistérios e terrores noturnos.', TRUE, 230, 39),
+('Titulo da libertadores',2023,'historia', 'Titulo da libertadores do fluminense em 2023',TRUE, 100, 40);
+
+INSERT INTO reservas (id_usuario, id_livro, data_reserva, status_reserva, pontuacao_de_confianca) VALUES
+(1, 5, '2025-05-01', 'Reservado', 85),
+(2, 10, '2025-05-02', 'Entregue ao usuario', 90),
+(3, 8, '2025-05-03', 'Reservado', 70),
+(4, 12, '2025-05-04', 'Reservado', 60),
+(5, 3, '2025-05-05', 'Entregue ao usuario', 95),
+(6, 7, '2025-05-06', 'Reservado', 100),
+(7, 9, '2025-05-07', 'Reservado', 88),
+(8, 14, '2025-05-08', 'Entregue ao usuario', 76),
+(9, 20, '2025-05-09', 'Reservado', 55),
+(10, 1, '2025-05-10', 'Reservado', 98),
+(11, 13, '2025-05-11', 'Entregue ao usuario', 67),
+(12, 6, '2025-05-12', 'Reservado', 80),
+(13, 2, '2025-05-13', 'Reservado', 92),
+(14, 11, '2025-05-14', 'Entregue ao usuario', 74),
+(15, 15, '2025-05-15', 'Reservado', 84),
+(16, 16, '2025-05-16', 'Reservado', 79),
+(17, 18, '2025-05-17', 'Entregue ao usuario', 65),
+(18, 4, '2025-05-18', 'Reservado', 93),
+(19, 17, '2025-05-19', 'Entregue ao usuario', 58),
+(20, 19, '2025-05-20', 'Reservado', 87),
+(21, 21, '2025-05-21', 'Reservado', 72),
+(22, 22, '2025-05-22', 'Entregue ao usuario', 66),
+(23, 23, '2025-05-23', 'Reservado', 91),
+(24, 24, '2025-05-24', 'Reservado', 77),
+(25, 25, '2025-05-25', 'Entregue ao usuario', 89),
+(26, 26, '2025-05-26', 'Reservado', 83),
+(27, 27, '2025-05-27', 'Reservado', 61),
+(28, 28, '2025-05-28', 'Entregue ao usuario', 97),
+(29, 29, '2025-05-29', 'Reservado', 86),
+(30, 30, '2025-05-30', 'Reservado', 94),
+(31, 31, '2025-05-31', 'Entregue ao usuario', 75),
+(32, 32, '2025-06-01', 'Reservado', 82),
+(33, 33, '2025-06-02', 'Reservado', 90),
+(34, 34, '2025-06-03', 'Entregue ao usuario', 73),
+(35, 35, '2025-06-04', 'Reservado', 60),
+(36, 36, '2025-06-05', 'Reservado', 88),
+(37, 37, '2025-06-06', 'Entregue ao usuario', 78),
+(38, 38, '2025-06-07', 'Reservado', 99),
+(39, 39, '2025-06-08', 'Reservado', 69),
+(40, 40, '2025-06-09', 'Entregue ao usuario', 81),
+(1, 2, '2025-06-10', 'Reservado', 93);
+
+INSERT INTO emprestimos (id_usuario, id_livro, data_de_emprestimo, data_devolucao_prevista, data_devolucao_real, status, avaliacao_do_leitor) VALUES
+(1, 5, '2025-05-01', '2025-05-15', NULL, 'Com cliente', NULL),
+(2, 10, '2025-04-25', '2025-05-09', '2025-05-08', 'Devolvido', 'Bom'),
+(3, 8, '2025-04-20', '2025-05-04', '2025-05-03', 'Devolvido', 'Muito Bom'),
+(4, 12, '2025-05-05', '2025-05-19', NULL, 'Com cliente', NULL),
+(5, 3, '2025-04-18', '2025-05-02', '2025-05-01', 'Devolvido', 'Ruim'),
+(6, 7, '2025-05-06', '2025-05-20', NULL, 'Com cliente', NULL),
+(7, 9, '2025-04-28', '2025-05-12', '2025-05-10', 'Devolvido', 'Mais ou menos'),
+(8, 14, '2025-04-27', '2025-05-11', '2025-05-09', 'Devolvido', 'Bom'),
+(9, 20, '2025-05-07', '2025-05-21', NULL, 'Com cliente', NULL),
+(10, 1, '2025-05-02', '2025-05-16', NULL, 'Com cliente', NULL),
+(11, 13, '2025-04-15', '2025-04-29', '2025-04-28', 'Devolvido', 'Muito Bom'),
+(12, 6, '2025-05-03', '2025-05-17', NULL, 'Com cliente', NULL),
+(13, 2, '2025-04-20', '2025-05-04', '2025-05-02', 'Devolvido', 'Bom'),
+(14, 11, '2025-04-22', '2025-05-06', '2025-05-06', 'Devolvido', 'Mais ou menos'),
+(15, 15, '2025-05-04', '2025-05-18', NULL, 'Com cliente', NULL),
+(16, 16, '2025-05-05', '2025-05-19', NULL, 'Com cliente', NULL),
+(17, 18, '2025-04-17', '2025-05-01', '2025-04-30', 'Devolvido', 'Ruim'),
+(18, 4, '2025-04-29', '2025-05-13', '2025-05-12', 'Devolvido', 'Bom'),
+(19, 17, '2025-05-08', '2025-05-22', NULL, 'Com cliente', NULL),
+(20, 19, '2025-04-26', '2025-05-10', '2025-05-09', 'Devolvido', 'Muito Bom'),
+(21, 21, '2025-05-01', '2025-05-15', NULL, 'Com cliente', NULL),
+(22, 22, '2025-04-23', '2025-05-07', '2025-05-06', 'Devolvido', 'Ruim'),
+(23, 23, '2025-05-06', '2025-05-20', NULL, 'Com cliente', NULL),
+(24, 24, '2025-04-18', '2025-05-02', '2025-05-01', 'Devolvido', 'Mais ou menos'),
+(25, 25, '2025-04-30', '2025-05-14', '2025-05-14', 'Devolvido', 'Bom'),
+(26, 26, '2025-05-02', '2025-05-16', NULL, 'Com cliente', NULL),
+(27, 27, '2025-05-03', '2025-05-17', NULL, 'Com cliente', NULL),
+(28, 28, '2025-04-19', '2025-05-03', '2025-05-02', 'Devolvido', 'Muito Bom'),
+(29, 29, '2025-05-05', '2025-05-19', NULL, 'Com cliente', NULL),
+(30, 30, '2025-04-21', '2025-05-05', '2025-05-04', 'Devolvido', 'Ruim'),
+(31, 31, '2025-04-30', '2025-05-14', NULL, 'Com cliente', NULL),
+(32, 32, '2025-04-25', '2025-05-09', '2025-05-08', 'Devolvido', 'Bom'),
+(33, 33, '2025-05-06', '2025-05-20', NULL, 'Com cliente', NULL),
+(34, 34, '2025-05-07', '2025-05-21', NULL, 'Com cliente', NULL),
+(35, 35, '2025-04-29', '2025-05-13', '2025-05-13', 'Devolvido', 'Mais ou menos'),
+(36, 36, '2025-05-02', '2025-05-16', NULL, 'Com cliente', NULL),
+(37, 37, '2025-04-20', '2025-05-04', '2025-05-04', 'Devolvido', 'Bom'),
+(38, 38, '2025-05-03', '2025-05-17', NULL, 'Com cliente', NULL),
+(39, 39, '2025-04-28', '2025-05-12', '2025-05-11', 'Devolvido', 'Muito Bom'),
+(40, 40, '2025-05-01', '2025-05-15', NULL, 'Com cliente', NULL),
+(1, 2, '2025-04-22', '2025-05-06', '2025-05-06', 'Devolvido', 'Ruim');
+
+INSERT INTO usuarios (nome, email, telefone, data_cadastro, genero) VALUES
+('Luis Filipe Campelo','luisfilipecab@gmail.com','61988381692','2025-05-19','masculino'),
+('Toni Monteiro','monteirobelinho@gmail.com','6193933293','2025-05-19','masculino'),
+('Ana Diva Campelo','ana.diva.belinho@gmail.com','61945454539','2025-05-19', 'feminino');
+
+INSERT INTO emprestimos (id_usuario, id_livro, data_de_emprestimo, data_devolucao_prevista, data_devolucao_real, status, avaliacao_do_leitor) VALUES
+(41, 5, '2025-05-01', '2025-05-15', NULL, 'Com cliente', NULL),
+(42, 10, '2025-04-25', '2025-05-09', '2025-05-08', 'Devolvido', 'Bom'),
+(43, 8, '2025-04-20', '2025-05-04', '2025-05-03', 'Devolvido', 'Muito Bom');
+
+
+
+
+
+
+
+
+
+
+
+
+
