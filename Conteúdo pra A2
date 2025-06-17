@@ -1,0 +1,68 @@
+-- Liste o nome de cada projeto. Para cada projeto, conte quantas tarefas existem para 
+-- cada nível de `prioridade` ('Baixa', 'Normal', 'Alta', 'Urgente'). O resultado deve 
+-- mostrar o nome do projeto e colunas separadas para a contagem de cada 
+-- prioridade. Projetos sem tarefas de uma certa prioridade devem mostrar 0.
+
+select p.nome,count(*) as total_tarefas 
+from projetos as p
+join tarefas as t on p.id=t.id_projeto
+where t.prioridade in ('Baixa','Normal','Alta','Urgente')
+group by p.nome;
+
+-- Mostre o nome dos responsáveis e a quantidade de tarefas pelas quais eles são 
+-- responsáveis (id_responsavel_tarefa). Liste apenas os responsáveis que têm 3 ou 
+-- mais tarefas atribuídas. Ordene do mais atarefado para o menos atarefado.
+
+select r.nome,count(*) as quantidade_tarefas from responsaveis as r
+join tarefas as t on r.id=t.id_responsavel_tarefa
+group by r.nome
+having quantidade_tarefas >= 3 
+order by quantidade_tarefas;
+
+-- Calcule a "duração percebida" média das tarefas (em dias) para projetos, 
+-- agrupados pelo status do projeto ('Pendente', 'Em Andamento', 'Concluído', 'Cancelado'). 
+-- Para este exercício, considere a "duração percebida" de uma tarefa como a diferença em dias entre a data_prevista_entrega da tarefa e a data_inicio do 
+-- projeto ao qual ela pertence. Exiba o status do projeto e a respectiva duração percebida média das tarefas. 
+-- Arredonde a média para duas casas decimais. Ignore tarefas ou projetos onde as datas necessárias sejam nulas.
+
+select t.status, avg(datediff(data_criacao, t.data_prevista_entrega)) as duracao_percebida 
+from tarefas as t
+where t.status in ('Pendente','Em andamento','Concluído','Cancelado')
+group by t.status;
+
+-- Para cada projeto que esteja atualmente com o status 'Em Andamento', 
+-- liste o nome do projeto. Dentro de cada um desses projetos, mostre cada 
+-- cargo (da tabela Responsaveis) dos responsáveis que possuem tarefas atribuídas 
+-- nesse projeto específico, e o número de tarefas que responsáveis com aquele cargo têm nesse projeto. 
+-- Ordene os resultados pelo nome do projeto e, em seguida, pelo nome do cargo. Só inclua cargos que efetivamente 
+-- tenham tarefas no respectivo projeto
+
+select p.nome,r.cargo,count(*) from projetos as p
+join responsaveis as r on r.id=p.id_responsavel_projeto
+where status in ('Em andamento')
+group by p.nome,r.cargo;
+
+-- Gere um ranking com os Top 5 projetos com mais tarefas em atraso.
+SELECT p.nome, COUNT(*) AS quantidade_tarefas
+FROM projetos AS p
+JOIN tarefas AS t ON p.id = t.id_projeto
+WHERE p.data_prevista_termino < CURDATE()
+GROUP BY p.nome
+ORDER BY quantidade_tarefas DESC
+LIMIT 5;
+
+-- Verifique quais as Tarefas são urgentes/altas e não concluídas
+
+select t.titulo,t.prioridade,p.status,p.nome,r.nome from tarefas as t
+join projetos as p on p.id=t.id_projeto join responsaveis as r on 
+r.id = p.id_responsavel_projeto 
+where t.prioridade in ('Urgente','Alta') and p.status in ('Em andamento','Pendente');
+
+-- Listar projetos com uma ou mais tarefas com status 'Pendente'
+
+select p.nome,count(*) as tarefas_pendentes from projetos as p
+join tarefas as t on t.id_projeto=p.id
+where t.status in ('Pendente')
+group by p.nome;
+
+
